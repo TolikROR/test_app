@@ -26,8 +26,6 @@ class UsersDatatable < ApplicationDatatable
 
   def total_entries
     users.total_count
-    # will_paginate
-    # users.total_entries
   end
 
   def users
@@ -35,17 +33,14 @@ class UsersDatatable < ApplicationDatatable
   end
 
   def fetch_users
-    search_string = []
-    columns.each do |term|
-      search_string << "#{term} like :search"
-    end
+    search_value = /.*#{params[:search][:value]}.*/i
 
-    # will_paginate
-    # users = User.page(page).per_page(per_page)
     users = User.order("#{sort_column} #{sort_direction}")
     users = users.page(page).per(per_page)
-    # вопрос поиска строчкой ниже
-    #users = users.where(search_string, search: "%#{params[:search][:value]}%")
+
+    users = users.where( :$or => [{:first_name => search_value}, {:last_name => search_value},
+                                  {:address => search_value}] )
+    #users = users.where({:birthday => params[:search][:value] }) error ArgumentError (no time information in ""):
 
   end
 

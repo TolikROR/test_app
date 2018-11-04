@@ -14,7 +14,6 @@ class ApplicationDatatable
     }
   end
 
-
 private
 
   def page
